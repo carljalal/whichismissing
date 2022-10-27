@@ -41,23 +41,27 @@ nextQuestion = () => {
         mostlyfullList.push(leftoverList[r]);
         leftoverList.splice(r,1);
     }
-    questionDiv.textContent = mostlyfullList.join("\n");
+    questionDiv.innerHTML = mostlyfullList.join("<br>");
     targetAnswer = leftoverList[0];
 }
 
 
 
+answerTextarea.addEventListener("keyup", (event)=> {
+    if(event.key =="Enter") answerTextarea.value = "";
+})
 
 answerTextarea.addEventListener("keydown",(event)=> {
     if(listArray.length < 1) questionDiv.textContent = "no list has been initalized yet!"
     if(event.key == "Enter") {
+        if(targetAnswer != answerTextarea.value) feedbackDiv.textContent = "error";
         if(targetAnswer == "" || targetAnswer == answerTextarea.value) {
             feedbackDiv.textContent = "correct!";
             nextQuestion();
         }
-        if(targetAnswer != answerTextarea.value) feedbackDiv.textContent = "error";
+        
     }
-    answerTextarea.value = "";
+    
 });
 initButton.onclick = () => {initList();}
 
