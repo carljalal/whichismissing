@@ -3,6 +3,57 @@
 <script>
 
 
+
+let listArray = [];
+let targetAnswer = "";
+
+answerTextarea = document.createElement("textarea");
+questionDiv = document.createElement("div");
+feedbackDiv = document.createElement("div");
+scoreDiv = document.createElement("div");
+initButton = document.createElement("button");
+listTextarea = document.createElement("textarea");
+
+document.body.append(answerTextarea);
+document.body.append(questionDiv);
+document.body.append(initButton);
+document.body.append(listTextarea);
+
+initList = () => {
+    let str = answerTextarea.value;
+    str = str.replace("\r\g","");
+    listArray = str.split("\n");
+}
+
+nextQuestion = () => {
+    let mostlyfullList = [];
+    let leftoverList = [...listArray];
+    while (leftoverList.length > 1){
+        let r = Math.floor(Math.random() * leftoverList.length);
+        mostlyfullList.push(leftoverList[r]);
+        leftoverList.splice(r,1);
+    }
+    questionDiv.textContent = mostlyfullList.join("\n");
+    targetAnswer = leftoverList[0];
+}
+
+
+
+
+answerTextarea.addEventListener("keydown",(event)=> {
+    if(listArray.length < 1) questionDiv.textContent = "no list has been initalized yet!"
+    if(event.key == "Enter") {
+        if(targetAnswer == "" || targetAnswer == answerTextarea.value) nextQuestion();
+    }
+});
+initButton.onclick = () => {initList();}
+
+
+
+
+
+
+
 </script>
 </body>
 </html>
