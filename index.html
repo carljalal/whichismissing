@@ -6,6 +6,10 @@
 
 let listArray = [];
 let targetAnswer = "";
+let startTime = 0.0;
+let lastTime = 0.0;
+let currentTime = 0.0;
+let numCorrect = 0;
 
 answerTextarea = document.createElement("textarea");
 questionDiv = document.createElement("div");
@@ -31,6 +35,9 @@ initList = () => {
     listArray = str.split("\n");
     listTextarea.value = "";
     nextQuestion();
+    lastTime = performance.now();
+    startTime = lastTime;
+    numCorrect = 0;
 }
 
 nextQuestion = () => {
@@ -57,6 +64,12 @@ answerTextarea.addEventListener("keydown",(event)=> {
         if(targetAnswer != answerTextarea.value) feedbackDiv.textContent = "error";
         if(targetAnswer == "" || targetAnswer == answerTextarea.value) {
             feedbackDiv.textContent = "correct!";
+            numCorrect++;
+            currentTime = performance.now();
+            scoreDiv.innerHTML = "<br>num correct: " + numCorrect;
+            scoreDiv.innerHTML += "<br>last performance: " + ((currentTime-lastTime)/1000.0).toFixed(2) + "s";
+            scoreDiv.innerHTML += "<br>average performance: " + ((currentTime-startTime)/(numCorrect*1000.0)).toFixed(2) + "s";
+            lastTime = currentTime;
             nextQuestion();
         }
         
