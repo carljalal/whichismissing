@@ -41,7 +41,7 @@ nextQuestion = () => {
         mostlyfullList.push(leftoverList[r]);
         leftoverList.splice(r,1);
     }
-    questionDiv.innerHTML = mostlyfullList.join("\n");
+    questionDiv.textContent = mostlyfullList.join("\n");
     targetAnswer = leftoverList[0];
 }
 
