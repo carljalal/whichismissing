@@ -16,6 +16,8 @@ listTextarea = document.createElement("textarea");
 
 document.body.append(answerTextarea);
 document.body.append(questionDiv);
+document.body.append(feedbackDiv);
+document.body.append(scoreDiv);
 document.body.append(initButton);
 document.body.append(document.createElement("br"));
 document.body.append(listTextarea);
@@ -24,10 +26,10 @@ initButton.innerHTML = "init list!"
 listTextarea.rows = 10;
 
 initList = () => {
-    let str = answerTextarea.value;
+    let str = listTextarea.value;
     str = str.replace("\r\g","");
     listArray = str.split("\n");
-    answerTextarea.value = "";
+    listTextarea.value = "";
     nextQuestion();
 }
 
@@ -39,7 +41,7 @@ nextQuestion = () => {
         mostlyfullList.push(leftoverList[r]);
         leftoverList.splice(r,1);
     }
-    questionDiv.textContent = mostlyfullList.join("\n");
+    questionDiv.innerHTML = mostlyfullList.join("\n");
     targetAnswer = leftoverList[0];
 }
 
@@ -49,7 +51,11 @@ nextQuestion = () => {
 answerTextarea.addEventListener("keydown",(event)=> {
     if(listArray.length < 1) questionDiv.textContent = "no list has been initalized yet!"
     if(event.key == "Enter") {
-        if(targetAnswer == "" || targetAnswer == answerTextarea.value) nextQuestion();
+        if(targetAnswer == "" || targetAnswer == answerTextarea.value) {
+            feedbackDiv.textContent = "correct!";
+            nextQuestion();
+        }
+        if(targetAnswer != answerTextarea.value) feedbackDiv.textContent = "error";
     }
 });
 initButton.onclick = () => {initList();}
