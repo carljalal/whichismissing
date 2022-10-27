@@ -17,12 +17,18 @@ listTextarea = document.createElement("textarea");
 document.body.append(answerTextarea);
 document.body.append(questionDiv);
 document.body.append(initButton);
+document.body.append(document.createElement("br"));
 document.body.append(listTextarea);
+
+initButton.innerHTML = "init list!"
+listTextarea.rows = 10;
 
 initList = () => {
     let str = answerTextarea.value;
     str = str.replace("\r\g","");
     listArray = str.split("\n");
+    answerTextarea.value = "";
+    nextQuestion();
 }
 
 nextQuestion = () => {
