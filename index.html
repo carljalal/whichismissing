@@ -57,6 +57,7 @@ answerTextarea.addEventListener("keydown",(event)=> {
         }
         if(targetAnswer != answerTextarea.value) feedbackDiv.textContent = "error";
     }
+    answerTextarea.value = "";
 });
 initButton.onclick = () => {initList();}
 
