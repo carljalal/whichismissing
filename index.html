@@ -5,51 +5,74 @@
 
 
 let listArray = [];
+let questionCurrent = {};
+let questionAhead = {};
 let targetAnswer = "";
 let startTime = 0.0;
 let lastTime = 0.0;
 let currentTime = 0.0;
 let numCorrect = 0;
+let allowAhead = true;
 
 answerTextarea = document.createElement("textarea");
 questionDiv = document.createElement("div");
 feedbackDiv = document.createElement("div");
 scoreDiv = document.createElement("div");
 initButton = document.createElement("button");
+questionAheadCheckboxLabel = document.createElement("span");
+questionAheadCheckbox = document.createElement("input");
 listTextarea = document.createElement("textarea");
+
+questionAheadCheckbox.type = "checkbox";
+questionAheadCheckboxLabel.textContent= "can see next question ahead"
 
 document.body.append(answerTextarea);
 document.body.append(questionDiv);
 document.body.append(feedbackDiv);
 document.body.append(scoreDiv);
 document.body.append(initButton);
+document.body.append(questionAheadCheckbox);
+document.body.append(questionAheadCheckboxLabel);
 document.body.append(document.createElement("br"));
 document.body.append(listTextarea);
 
 initButton.innerHTML = "init list!"
 listTextarea.rows = 10;
 
+
+refreshQuestionDisplay = () => {
+    questionDiv.innerHTML = questionCurrent.mostlyfullList.join("<br>");
+    if(questionAheadCheckbox.checked){
+        questionDiv.innerHTML += "<br>=========<br>"
+        questionDiv.innerHTML += questionAhead.mostlyfullList.join("<br>");
+    }
+}
+
 initList = () => {
     let str = listTextarea.value;
     str = str.replace("\r\g","");
     listArray = str.split("\n");
     listTextarea.value = "";
-    nextQuestion();
+    questionCurrent = getQuestion();
+    questionAhead = getQuestion();
+    refreshQuestionDisplay();
+
     lastTime = performance.now();
     startTime = lastTime;
     numCorrect = 0;
 }
 
-nextQuestion = () => {
-    let mostlyfullList = [];
-    let leftoverList = [...listArray];
-    while (leftoverList.length > 1){
-        let r = Math.floor(Math.random() * leftoverList.length);
-        mostlyfullList.push(leftoverList[r]);
-        leftoverList.splice(r,1);
+getQuestion = () => {
+    let q = {};
+    q.mostlyfullList = [];
+    q.leftoverList = [...listArray];
+    while (q.leftoverList.length > 1){
+        let r = Math.floor(Math.random() * q.leftoverList.length);
+        q.mostlyfullList.push(q.leftoverList[r]);
+        q.leftoverList.splice(r,1);
     }
-    questionDiv.innerHTML = mostlyfullList.join("<br>");
-    targetAnswer = leftoverList[0];
+    q.targetAnswer = q.leftoverList[0];
+    return q;
 }
 
 
@@ -70,7 +93,9 @@ answerTextarea.addEventListener("keydown",(event)=> {
             scoreDiv.innerHTML += "<br>last performance: " + ((currentTime-lastTime)/1000.0).toFixed(2) + "s";
             scoreDiv.innerHTML += "<br>average performance: " + ((currentTime-startTime)/(numCorrect*1000.0)).toFixed(2) + "s";
             lastTime = currentTime;
-            nextQuestion();
+            questionCurrent = JSON.parse(JSON.stringify(questionAhead));
+            questionAhead = getQuestion();
+            refreshQuestionDisplay();
         }
         
     }
