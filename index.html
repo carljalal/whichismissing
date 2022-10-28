@@ -13,6 +13,7 @@ let lastTime = 0.0;
 let currentTime = 0.0;
 let numCorrect = 0;
 let allowAhead = true;
+let sessionStarted = false;
 
 answerTextarea = document.createElement("textarea");
 questionDiv = document.createElement("div");
@@ -60,6 +61,7 @@ initList = () => {
     lastTime = performance.now();
     startTime = lastTime;
     numCorrect = 0;
+    sessionStarted = true;
 }
 
 getQuestion = () => {
@@ -84,8 +86,12 @@ answerTextarea.addEventListener("keyup", (event)=> {
 answerTextarea.addEventListener("keydown",(event)=> {
     if(listArray.length < 1) questionDiv.textContent = "no list has been initalized yet!"
     if(event.key == "Enter") {
-        if(targetAnswer != answerTextarea.value) feedbackDiv.textContent = "error";
-        if(targetAnswer == "" || targetAnswer == answerTextarea.value) {
+        if (!sessionStarted) {
+            initList();
+            return;
+        }
+        if(questionCurrent.targetAnswer != answerTextarea.value) feedbackDiv.textContent = "error";
+        else {
             feedbackDiv.textContent = "correct!";
             numCorrect++;
             currentTime = performance.now();
