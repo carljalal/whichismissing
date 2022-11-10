@@ -49,9 +49,9 @@ listTextarea.rows = 10;
 
 refreshQuestionDisplay = () => {
     questionDiv.innerHTML = questionCurrent.mostlyfullList.join("<br>");
-    if(questionAheadCheckbox.value > 0 && questionAheadCheckbox.value.trim() != ""){
-        questionDiv.innerHTML += "<br>=========<br>"
-        questionDiv.innerHTML += questionAhead.mostlyfullList.join("<br>");
+    if(parseInt(questionAheadCheckbox.value) > 0 && questionAheadCheckbox.value.trim() != ""){
+        numAhead = parseInt(questionAheadCheckbox.value);
+         for (let i = 0; i < numAhead; i++) questionDiv.innerHTML += "<br>=========<br>" + questionAhead[i].mostlyfullList.join("<br>");
     }
     
 }
@@ -62,6 +62,7 @@ initList = () => {
     listArray = str.split("\n");
     listTextarea.value = "";
     questionCurrent = getQuestion();
+    numAhead = parseInt(questionAheadCheckbox.value);
     while (questionAhead.length < numAhead) questionAhead.push(getQuestion());
     refreshQuestionDisplay();
 
@@ -109,11 +110,13 @@ answerTextarea.addEventListener("keydown",(event)=> {
             scoreDiv.innerHTML += "<br>last performance: " + ((currentTime-lastTime)/1000.0).toFixed(2) + "s";
             scoreDiv.innerHTML += "<br>average performance: " + ((currentTime-startTime)/(numCorrect*1000.0)).toFixed(2) + "s";
             lastTime = currentTime;
+            numAhead = parseInt(questionAheadCheckbox.value);
             if(numAhead < 1) questionCurrent = getQuestion();
             else {
-                questionCurrent = JSON.parse(JSON.stringify(questionAhead));
+                questionCurrent = JSON.parse(JSON.stringify(questionAhead[0]));
                 questionAhead.splice(0,1);
-                while (questionAhead.length < numAhead) questionAhead.push(getQuestion());
+                let newQ = getQuestion();
+                while (questionAhead.length < numAhead) questionAhead.push(newQ);
             }
             refreshQuestionDisplay();
         }
