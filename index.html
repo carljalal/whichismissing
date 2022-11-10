@@ -96,6 +96,8 @@ answerTextarea.addEventListener("keydown",(event)=> {
     if(event.key == "Enter") {
         if (!sessionStarted) {
             initList();
+            event.preventDefault();
+            answerTextarea.value = "";
             return;
         }
         if(questionCurrent.targetAnswer != answerTextarea.value) feedbackDiv.textContent = "error";
