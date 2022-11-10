@@ -49,7 +49,7 @@ listTextarea.rows = 10;
 
 refreshQuestionDisplay = () => {
     questionDiv.innerHTML = questionCurrent.mostlyfullList.join("<br>");
-    if(questionAheadCheckbox.checked){
+    if(questionAheadCheckbox.value > 0 && questionAheadCheckbox.value.trim() != ""){
         questionDiv.innerHTML += "<br>=========<br>"
         questionDiv.innerHTML += questionAhead.mostlyfullList.join("<br>");
     }
