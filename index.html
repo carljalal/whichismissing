@@ -6,7 +6,7 @@
 
 let listArray = [];
 let questionCurrent = {};
-let questionAhead = {};
+let questionAhead = [];
 let targetAnswer = "";
 let startTime = 0.0;
 let lastTime = 0.0;
@@ -14,6 +14,11 @@ let currentTime = 0.0;
 let numCorrect = 0;
 let allowAhead = true;
 let sessionStarted = false;
+let numAhead = 0;
+
+let minLeftover = 1;
+let maxLeftover = 1;
+
 
 answerTextarea = document.createElement("textarea");
 questionDiv = document.createElement("div");
@@ -24,16 +29,17 @@ questionAheadCheckboxLabel = document.createElement("span");
 questionAheadCheckbox = document.createElement("input");
 listTextarea = document.createElement("textarea");
 
-questionAheadCheckbox.type = "checkbox";
-questionAheadCheckboxLabel.textContent= "can see next question ahead"
+questionAheadCheckbox.type = "text";
+questionAheadCheckbox.style.width = "50px";
+questionAheadCheckboxLabel.textContent= "  num upcoming questions visible ahead: "
 
 document.body.append(answerTextarea);
 document.body.append(questionDiv);
 document.body.append(feedbackDiv);
 document.body.append(scoreDiv);
 document.body.append(initButton);
-document.body.append(questionAheadCheckbox);
 document.body.append(questionAheadCheckboxLabel);
+document.body.append(questionAheadCheckbox);
 document.body.append(document.createElement("br"));
 document.body.append(listTextarea);
 
@@ -47,6 +53,7 @@ refreshQuestionDisplay = () => {
         questionDiv.innerHTML += "<br>=========<br>"
         questionDiv.innerHTML += questionAhead.mostlyfullList.join("<br>");
     }
+    
 }
 
 initList = () => {
@@ -55,7 +62,7 @@ initList = () => {
     listArray = str.split("\n");
     listTextarea.value = "";
     questionCurrent = getQuestion();
-    questionAhead = getQuestion();
+    while (questionAhead.length < numAhead) questionAhead.push(getQuestion());
     refreshQuestionDisplay();
 
     lastTime = performance.now();
@@ -78,10 +85,11 @@ getQuestion = () => {
 }
 
 
-
+/*
 answerTextarea.addEventListener("keyup", (event)=> {
     if(event.key =="Enter") answerTextarea.value = "";
 })
+*/
 
 answerTextarea.addEventListener("keydown",(event)=> {
     if(listArray.length < 1) questionDiv.textContent = "no list has been initalized yet!"
@@ -99,11 +107,16 @@ answerTextarea.addEventListener("keydown",(event)=> {
             scoreDiv.innerHTML += "<br>last performance: " + ((currentTime-lastTime)/1000.0).toFixed(2) + "s";
             scoreDiv.innerHTML += "<br>average performance: " + ((currentTime-startTime)/(numCorrect*1000.0)).toFixed(2) + "s";
             lastTime = currentTime;
-            questionCurrent = JSON.parse(JSON.stringify(questionAhead));
-            questionAhead = getQuestion();
+            if(numAhead < 1) questionCurrent = getQuestion();
+            else {
+                questionCurrent = JSON.parse(JSON.stringify(questionAhead));
+                questionAhead.splice(0,1);
+                while (questionAhead.length < numAhead) questionAhead.push(getQuestion());
+            }
             refreshQuestionDisplay();
         }
-        
+        event.preventDefault();
+        answerTextarea.value = "";
     }
     
 });
